@@ -5,14 +5,8 @@
     "require": {
         "php": "^7.1.3",
         "symfony/yaml": "^4.3",
-        "nlib/log" : "^1.0"
+        "nlib/lib-log" : "dev-master@dev"
     },
-    "authors": [
-        {
-            "name": "Chanteux Nathan",
-            "email": "firminchanteux@gmail.com"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "nlib\\Yaml\\": ""
