@@ -16,5 +16,7 @@
         "psr-4": {
             "nlib\\Yaml\\": "nlib/lib-yaml/"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
