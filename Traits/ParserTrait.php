@@ -19,7 +19,7 @@ trait ParserTrait {
 
     #region Setter
 
-    public function setParser(YamlParser $parser) { $this->_parser = $parser; return $this; }
+    public function setParser(YamlParser $parser) : self { $this->_parser = $parser; return $this; }
     
     #endregion
 }
