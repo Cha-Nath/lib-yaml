@@ -16,9 +16,7 @@ class YamlParser implements YamlParserInterface {
         try {
             return Yaml::parseFile($file . '.yaml');
         } catch (ParseException $e) {
-            $error = 'Unable to parse the YAML string : ' . $e->getMessage();
-            $this->log(['Yaml' => $error]);
-            echo($error);
+            $this->dlog([__CLASS__ . '::' . __FUNCTION__ => 'Unable to parse the YAML string : ' . $e->getMessage()]);
         }
     }
     
