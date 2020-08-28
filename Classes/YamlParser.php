@@ -3,6 +3,7 @@
 namespace nlib\Yaml\Classes;
 
 use nlib\Log\Traits\LogTrait;
+use nlib\Instance\Traits\InstanceTrait;
 use nlib\Yaml\Interfaces\YamlParserInterface;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
@@ -10,6 +11,7 @@ use Symfony\Component\Yaml\Yaml;
 class YamlParser implements YamlParserInterface {
 
     use LogTrait;
+    use InstanceTrait;
 
     public function get(string $file) {
 
