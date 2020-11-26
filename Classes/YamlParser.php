@@ -28,16 +28,14 @@ class YamlParser implements YamlParserInterface {
         if(is_array($mixed) && array_key_exists($i = 'imports', $mixed) && is_array($imports = $mixed[$i])) :
             foreach($imports as $import) :
                 if(!array_key_exists($r = 'resource', $import)) continue;
-                $mixed = array_merge($this->get($this->getResource($import[$r]), $flag), $mixed);
+                $mixed = array_merge_recursive($this->get($this->getResource($import[$r]), $flag), $mixed);
             endforeach;
         endif;
 
         if(is_object($mixed) && property_exists($mixed, $i = 'imports') && is_array($imports = $mixed->$i)) :
             foreach($imports as $import) :
                 if(!property_exists($import, $r = 'resource')) continue;
-                foreach($Obj = $this->get($this->getResource($import->$r), $flag) as $key => $value) :
-                    $mixed->$key = $value;
-                endforeach;
+                $mixed = (object) array_merge_recursive((array) $this->get($this->getResource($import->$r), $flag), (array) $mixed);
             endforeach;
         endif;
 
