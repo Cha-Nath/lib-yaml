@@ -28,14 +28,17 @@ class YamlParser implements YamlParserInterface {
         if(is_array($mixed) && array_key_exists($i = 'imports', $mixed) && is_array($imports = $mixed[$i])) :
             foreach($imports as $import) :
                 if(!array_key_exists($r = 'resource', $import)) continue;
-                $mixed = array_merge_recursive($this->get($this->getResource($import[$r]), $flag), $mixed);
+                // $mixed = array_replace_recursive($this->get($this->getResource($import[$r]), $flag), $mixed);
+                $mixed = $this->merge($this->get($this->getResource($import[$r]), $flag), $mixed);
+                
             endforeach;
         endif;
 
         if(is_object($mixed) && property_exists($mixed, $i = 'imports') && is_array($imports = $mixed->$i)) :
             foreach($imports as $import) :
                 if(!property_exists($import, $r = 'resource')) continue;
-                $mixed = (object) array_merge_recursive((array) $this->get($this->getResource($import->$r), $flag), (array) $mixed);
+                // $mixed = (object) array_merge_recursive((array) $this->get($this->getResource($import->$r), $flag), (array) $mixed);
+                $mixed = (object) $this->merge((array) $this->get($this->getResource($import->$r), $flag), (array) $mixed);
             endforeach;
         endif;
 
@@ -48,6 +51,23 @@ class YamlParser implements YamlParserInterface {
             DIRECTORY_SEPARATOR,
             str_replace('%ROOT_CONFIG%', Path::i($this->_i())->getConfig(), $resource)
         );
+    }
+
+    protected function merge(array $a, array $b) {
+
+        $tmps = $a;
+
+        foreach($b as $key => $value) :
+            
+            if (is_string($key))
+                if(is_array($value) && array_key_exists($key, $tmps) && is_array($tmps[$key]))
+                    $tmps[$key] = $this->merge($tmps[$key], $value);
+                else $tmps[$key] = $value;
+            else $tmps[] = $value;
+
+        endforeach;
+
+        return $tmps;
     }
     
 }
