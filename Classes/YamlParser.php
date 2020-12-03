@@ -24,7 +24,7 @@ class YamlParser implements YamlParserInterface {
             if (!is_readable($file))
                 throw new ParseException(sprintf('File "%s" cannot be read.', $file));
 
-            if(!empty(preg_match('/\@include\(([a-zA-Z0-9_%\\/,]+)\)/', $yaml = file_get_contents($file), $matches))) :
+            if(!empty(preg_match('/\@include\(([a-zA-Z0-9_%\\/, ]+)\)/', $yaml = file_get_contents($file), $matches))) :
                 $tmp = '';
                 foreach($includes = explode(',', $matches[1]) as $include)
                     if(file_exists($f = $this->getResource($include) . '.yaml'))
@@ -67,7 +67,7 @@ class YamlParser implements YamlParserInterface {
         return str_replace(
             ['\\', '/'],
             DIRECTORY_SEPARATOR,
-            str_replace('%ROOT_CONFIG%', Path::i($this->_i())->getConfig(), $resource)
+            str_replace(['%ROOT_CONFIG%', ' '], [Path::i($this->_i())->getConfig(), ''], $resource)
         );
     }
 
