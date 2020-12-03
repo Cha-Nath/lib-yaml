@@ -23,15 +23,15 @@ class YamlParser implements YamlParserInterface {
     
             if (!is_readable($file))
                 throw new ParseException(sprintf('File "%s" cannot be read.', $file));
-            
+
             if(!empty(preg_match('/\@include\(([a-zA-Z0-9_%\\/,]+)\)/', $yaml = file_get_contents($file), $matches))) :
                 $tmp = '';
-
                 foreach($includes = explode(',', $matches[1]) as $include)
-                    if(file_exists($file = $this->getResource($include) . '.yaml'))
-                        $tmp .= file_get_contents($file);
+                    if(file_exists($f = $this->getResource($include) . '.yaml'))
+                        $tmp .= file_get_contents($f);
 
-                $yaml .= $tmp . str_replace('@include('. $matches[1] .')', '', $yaml);
+                $tmp .= str_replace('@include('. $matches[1] .')', '', $yaml);
+                $yaml = $tmp;
             endif;
 
             return $this->include(Yaml::parse($yaml, $flag), $flag);
