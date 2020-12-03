@@ -17,19 +17,21 @@ class YamlParser implements YamlParserInterface {
     public function get(string $file, int $flag = 0) {
 
         try {
-            // var_dump(file_get_contents($file . '.yaml'));die;
-            if(!file_exists($file .= '.yaml')) die;
-            $yaml = file_get_contents($file);
-            // var_dump($yaml, preg_match('/\@include\([a-zA-Z0-9_%\\\/]+\)/', $yaml, $matches));
-            // '/\@include\((\w+)\)/'
-            if(!empty(preg_match('/\@include\(([a-zA-Z0-9_%\\/,]+)\)/', $yaml, $matches))) :
-                // var_dump($matches[1]);
+
+            if (!file_exists($file .= '.yaml'))
+                throw new ParseException(sprintf('File "%s" does not exist.', $file));
+    
+            if (!is_readable($file))
+                throw new ParseException(sprintf('File "%s" cannot be read.', $file));
+            
+            if(!empty(preg_match('/\@include\(([a-zA-Z0-9_%\\/,]+)\)/', $yaml = file_get_contents($file), $matches))) :
                 $tmp = '';
-                $includes = explode(',', $matches[1]);
-                foreach($includes as $include) if(file_exists($f = $this->getResource($include) . '.yaml')) $tmp .= file_get_contents($f);
-                $yaml = str_replace('@include('. $matches[1] .')', '', $yaml);
-                $tmp .= $yaml;
-                $yaml = $tmp;
+
+                foreach($includes = explode(',', $matches[1]) as $include)
+                    if(file_exists($file = $this->getResource($include) . '.yaml'))
+                        $tmp .= file_get_contents($file);
+
+                $yaml .= $tmp . str_replace('@include('. $matches[1] .')', '', $yaml);
             endif;
 
             return $this->include(Yaml::parse($yaml, $flag), $flag);
