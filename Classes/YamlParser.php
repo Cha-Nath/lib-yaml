@@ -17,7 +17,23 @@ class YamlParser implements YamlParserInterface {
     public function get(string $file, int $flag = 0) {
 
         try {
-            return $this->include(Yaml::parseFile($file . '.yaml', $flag), $flag);
+            // var_dump(file_get_contents($file . '.yaml'));die;
+            if(!file_exists($file .= '.yaml')) die;
+            $yaml = file_get_contents($file);
+            // var_dump($yaml, preg_match('/\@include\([a-zA-Z0-9_%\\\/]+\)/', $yaml, $matches));
+            // '/\@include\((\w+)\)/'
+            if(!empty(preg_match('/\@include\(([a-zA-Z0-9_%\\/,]+)\)/', $yaml, $matches))) :
+                // var_dump($matches[1]);
+                $tmp = '';
+                $includes = explode(',', $matches[1]);
+                foreach($includes as $include) if(file_exists($f = $this->getResource($include) . '.yaml')) $tmp .= file_get_contents($f);
+                $yaml = str_replace('@include('. $matches[1] .')', '', $yaml);
+                $tmp .= $yaml;
+                $yaml = $tmp;
+            endif;
+
+            return $this->include(Yaml::parse($yaml, $flag), $flag);
+            // return $this->include(Yaml::parseFile($file . '.yaml', $flag), $flag);
         } catch (ParseException $e) {
             $this->dlog([__CLASS__ . '::' . __FUNCTION__ => 'Unable to parse the YAML string : ' . $e->getMessage()]);
         }
