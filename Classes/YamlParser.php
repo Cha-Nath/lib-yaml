@@ -30,8 +30,8 @@ class YamlParser implements YamlParserInterface {
                     if(file_exists($f = $this->getResource($include) . '.yaml'))
                         $tmp .= file_get_contents($f);
 
-                $tmp .= str_replace('@include('. $matches[1] .')', '', $yaml);
-                $yaml = $tmp;
+                $yaml = $tmp . str_replace('@include('. $matches[1] .')', '', $yaml);
+
             endif;
 
             return $this->include(Yaml::parse($yaml, $flag), $flag);
