@@ -34,12 +34,11 @@ class YamlParser implements YamlParserInterface {
                 $yaml = $tmp . str_replace('@include('. $matches[1] .')', '', $yaml);
 
             endif;
-
+            
             return $this->include(Yaml::parse($yaml, $flag), $flag);
             // return $this->include(Yaml::parseFile($file . '.yaml', $flag), $flag);
         } catch (ParseException $e) {
-            $this->dlog([__CLASS__ . '::' . __FUNCTION__ => 'Unable to parse the YAML string : '
-                . str_replace(Path::i($this->_i())->getRoot() ,'', $e->getMessage())]);
+            $this->dlog([__CLASS__ . '::' . __FUNCTION__ => 'Unable to parse the YAML string : ' . $e->getMessage()]);
         }
     }
 
